@@ -2,7 +2,21 @@
 
 Browser-based HTML, JavaScript and Three.js fighting game. Six fighters, three arenas (Film City Backlot, Dhobi Pachad Akhada and Cinema), CPU, training and two-player rooms.
 
-## Hosting: Cloudflare Pages, no Docker required
+## Hosting: Cloudflare Workers Builds (current deployment), no Docker required
+
+The connected build runs `npx wrangler deploy`, which is Workers Builds, not Pages. The root `wrangler.jsonc` explicitly deploys the game from `dist/`, the room API and its SQLite-backed Durable Object together. No separate Worker deployment or manual ROOMS binding is needed in this mode.
+
+- Root directory: repository root
+- Deploy command: `npx wrangler deploy`
+- Build command: may be blank; Wrangler runs `node build.mjs` automatically
+- Worker name in the dashboard: `bollybrawl` (must match root Wrangler configuration)
+- Production branch: `main`
+
+If the dashboard Worker already has a different name, set `name` in root `wrangler.jsonc` to that existing Worker name before deployment. This does not change the website/game title. Custom domains are managed on that Worker's Settings → Domains & Routes.
+
+The `functions/` adapter below is retained only for the alternative Pages deployment. Workers uses `cloudflare/site-worker.js` directly, so it does not need to migrate or auto-detect Pages Functions.
+
+## Alternative: Cloudflare Pages
 
 The browser downloads static JavaScript, textures, models and audio. There is no application server required for CPU or training. Docker is optional for running the included Node room server elsewhere; it is not required or used by Cloudflare Pages.
 
