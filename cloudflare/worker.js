@@ -82,7 +82,7 @@ export class BollyRoom{
   }catch{}
  }
  async webSocketClose(ws,code,reason){
-  try{ws.close(code,reason);}catch{}
+  try{ws.close(code===1005?1000:code,reason);}catch{}
   const seat=ws.deserializeAttachment()?.seat;
   if(this.room&&!this.connected(seat)){
    const p=this.room.players[seat];if(p){p.input={};p.edges=[];}
