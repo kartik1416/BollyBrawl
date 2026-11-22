@@ -1,0 +1,176 @@
+@font-face{font-family:FightDisplay;src:url('./assets/fonts/ArchivoBlack-Regular.ttf') format('truetype');font-weight:900;font-display:swap}
+@font-face{font-family:FightUI;src:url('./assets/fonts/BarlowSemiCondensed-SemiBold.ttf') format('truetype');font-weight:600 800;font-display:swap}
+@font-face{font-family:Brawl;src:url('./assets/fonts/BarlowCondensed-Bold.ttf') format('truetype');font-weight:700;font-display:swap}
+:root{--yellow:#ecff4e;--red:#ff563d;--blue:#65cafa;--white:#f3f2e9;--dark:#0b1017;--muted:#b6b9bb;--body:FightUI,'Arial Narrow',sans-serif;--display:FightDisplay,Impact,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--dark);color:var(--white);font-family:var(--body);overflow:hidden}
+button,input,select{font:inherit}button{cursor:pointer;color:inherit;background:none;border:0;padding:0}a{color:var(--yellow)}button:focus-visible,input:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
+[hidden],.hidden{display:none!important}
+#arena{position:fixed;inset:0;display:block;width:100%;height:100%}
+.grain{position:fixed;inset:0;pointer-events:none;background:linear-gradient(90deg,#080d16ed,transparent 27%,transparent 73%,#080d16ed),linear-gradient(0deg,#080d16 0%,#080d16d9 22%,transparent 53%,#080d16ba 100%)}
+body.in-game .grain{background:linear-gradient(0deg,#080d16bd,transparent 28%,transparent 75%,#080d16c4)}
+.corner-brand{position:fixed;top:24px;left:30px;z-index:4;width:195px}
+.corner-brand img{width:100%;display:block}
+.quick-controls{position:fixed;top:25px;right:30px;z-index:8;display:flex;gap:16px;align-items:center}
+.quick-controls button{font-size:11px;letter-spacing:.11em;padding:8px 0;border-bottom:2px solid #ffffff45}
+.quick-controls button:hover{color:var(--yellow);border-color:var(--yellow)}
+body:not(.in-game) #pause{display:none}
+.matchup{position:fixed;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;padding:19px 28px 24px}
+.matchup-title{text-align:center;pointer-events:none}
+.selection-kicker{margin:0 0 6px;font-size:10px;color:var(--muted);letter-spacing:.28em}
+.matchup-title h1{font:900 clamp(25px,3.2vw,48px)/1 var(--display);letter-spacing:-.045em;margin:0;text-shadow:0 3px 0 #0007}
+#pick-status{font-size:12px;color:var(--yellow);margin:8px 0;letter-spacing:.15em;text-transform:uppercase}
+.matchup-stage{position:absolute;left:30px;right:30px;top:24%;height:33%;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.fighter-story{width:min(25vw,315px);padding:16px 0;border-top:3px solid var(--yellow)}
+.fighter-story small{font-size:11px;letter-spacing:.13em;color:var(--yellow)}
+.fighter-story h2{font:900 clamp(20px,3.1vw,43px)/.99 var(--display);letter-spacing:-.05em;margin:11px 0 13px;max-width:285px;text-wrap:balance}
+.fighter-story p{font-size:14px;line-height:1.25;margin:6px 0;color:#c0c4c6;max-width:220px}
+.fighter-story>p:first-of-type{display:none}
+.fighter-story strong{display:block;font-size:12px;color:var(--yellow);letter-spacing:.03em;margin:8px 0}
+.rival-story{text-align:right;border-color:var(--blue)}
+.rival-story p,.rival-story h2{margin-left:auto}.rival-story small,.rival-story strong{color:var(--blue)}
+.matchup-versus{position:absolute;left:50%;top:30%;transform:translateX(-50%) rotate(-8deg);font:900 clamp(35px,6vw,75px)/1 var(--display);color:var(--white);text-shadow:4px 5px 0 #0007;opacity:.85}
+.matchup-controls{margin-top:auto;display:flex;align-items:center;flex-direction:column;gap:9px;width:min(920px,78vw)}
+.matchup-roster{display:grid;grid-template-columns:repeat(6,minmax(65px,1fr));gap:8px;width:100%}
+.fighter-card{position:relative;height:clamp(76px,13vh,124px);overflow:hidden;background:#18222b;border:1px solid #667078;transform:skewX(-7deg);transition:border-color .15s,transform .15s}
+.fighter-card .roster-photo,.fighter-card .fighter-photo{position:absolute;inset:0;background-size:cover;background-position:center 22%;filter:saturate(.70);transform:skewX(7deg) scale(1.13)}
+.fighter-card:after{content:'';position:absolute;inset:50% 0 0;background:linear-gradient(transparent,#080b11f2)}
+.fighter-card b{position:absolute;bottom:7px;left:7px;right:5px;z-index:2;font:600 clamp(9px,1.12vw,14px)/1 var(--body);text-align:left;letter-spacing:.015em;transform:skewX(7deg)}
+.fighter-card i{display:none}
+.fighter-card:hover{transform:skewX(-7deg) translateY(-4px);border-color:#fff}
+.fighter-card.unlocked{border:2px solid var(--yellow);box-shadow:0 0 15px #eaff4e2a}
+.fighter-card.rival-picked{outline:2px solid var(--blue);outline-offset:1px}
+.fighter-card[data-slot]:not([data-slot=""]):before{content:attr(data-slot);position:absolute;top:4px;left:4px;background:var(--yellow);color:#101318;padding:2px 5px;font-size:10px;z-index:3;transform:skewX(7deg)}
+.fighter-card.rival-picked:not(.unlocked):before{background:var(--blue)}
+.fighter-photo{background-image:url('./assets/ui/asli-roster.png')}.jon-photo{background-image:url('./assets/ui/jon-roster.png')}.tiger-photo{background-image:url('./assets/ui/tiger-roster.png')}.baburao-photo{background-image:url('./assets/ui/baburao-roster.png')}.bawa-photo{background-image:url('./assets/ui/bawa-roster.png')}.vimal-photo{background-image:url('./assets/ui/vimal-roster.png')}
+.matchup-pickers{position:absolute;right:30px;bottom:clamp(285px,35vh,340px)}
+.difficulty-buttons{display:flex;align-items:center;gap:3px;background:#0b1017b5;padding:4px}
+.difficulty-buttons span{font-size:10px;margin:0 6px;color:var(--muted)}
+.difficulty-buttons button{font-size:11px;letter-spacing:.07em;padding:7px 12px;text-transform:uppercase;border-bottom:2px solid #414b53}
+.difficulty-buttons button[aria-pressed=true]{color:var(--yellow);border-color:var(--yellow)}
+.arena-selector{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;padding:0 2px}
+.arena-card{height:clamp(43px,7.1vh,65px);text-align:left;position:relative;padding:7px 12px;background:linear-gradient(100deg,#172733d9,#080e16e9);border:1px solid #647078;background-size:cover;background-position:center 55%;isolation:isolate}
+.arena-card:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#060e18e8,#060e1850);z-index:-1}
+.arena-card span{font-size:clamp(10px,1.25vw,15px);font-weight:700;letter-spacing:.035em}
+.arena-card small{display:block;font-size:9px;color:#c1c5c8;letter-spacing:.13em;margin-top:1px}
+.arena-card.selected{border:2px solid var(--yellow);color:var(--yellow)}
+.arena-card.selected:after{content:'SELECTED';position:absolute;right:4px;bottom:3px;font-size:7px;letter-spacing:.08em;color:var(--yellow)}
+.matchup-actions{display:flex;gap:20px;align-items:center;justify-content:space-between;width:100%;margin-top:4px}
+.matchup-modes{display:flex;gap:0;align-items:center;flex:1}
+.matchup-modes button{flex:1;white-space:nowrap;padding:12px 13px;color:#adb7bf;font-size:clamp(11px,1.3vw,16px);letter-spacing:.06em;border-top:2px solid #59616a;border-bottom:2px solid transparent}
+.matchup-modes button.selected{color:#fff;border-color:var(--yellow);background:linear-gradient(0deg,#eaff4e20,transparent)}
+.primary{display:flex;justify-content:center;align-items:center;gap:22px;padding:14px 25px;background:var(--yellow);color:#101318;min-width:215px;font:900 clamp(16px,1.75vw,24px)/1 var(--display);letter-spacing:-.03em;clip-path:polygon(8% 0,100% 0,92% 100%,0 100%);text-transform:uppercase}
+.primary:hover{background:#fff}.primary:disabled{opacity:.55;cursor:wait}
+.matchup-arena{display:none}
+#hud{position:fixed;top:65px;left:4%;right:4%;z-index:3;display:grid;grid-template-columns:1fr 90px 1fr;gap:12px}
+.fighter-label{display:flex;justify-content:space-between;align-items:end;font-size:15px;line-height:1.1;letter-spacing:.025em;text-shadow:0 2px 4px #000}
+.fighter-label #player-name,.fighter-label #opponent-name{font:900 clamp(11px,1.55vw,21px)/1 var(--display);letter-spacing:-.03em}
+.fighter-label b{display:none}.fighter-label small{display:block;color:var(--yellow);font-size:9px;letter-spacing:.13em;margin-bottom:5px}.rival .fighter-label small{color:var(--blue);text-align:right}
+#hp1,#hp2{font-size:10px;color:#ffffffa0}
+.health{height:20px;background:#361b20;margin-top:9px;padding:3px;border:1px solid #f8efe247;transform:skewX(-13deg);box-shadow:0 2px 10px #0006}
+.health i{height:100%;display:block;width:100%;background:linear-gradient(0deg,#a7bf35,#edff78);box-shadow:0 0 12px #e8ff5940;transition:width .12s}
+.rival .health i{margin-left:auto;background:linear-gradient(0deg,#b53531,#ff8b6c);box-shadow:0 0 12px #ff5b4340}
+.rounds{height:16px;color:var(--yellow);font-size:17px;line-height:1;margin:5px 0;letter-spacing:5px}.rival .rounds{text-align:right;color:#ff7e64}
+.clock{text-align:center;margin-top:-7px}.clock small{font-size:8px;letter-spacing:.12em}.clock strong{display:block;font:900 clamp(36px,4.4vw,61px)/.93 var(--display);letter-spacing:-.08em;margin:5px 0}.clock>span{font-size:8px;letter-spacing:.10em;color:#c9d2d7}
+.special-meter{max-width:55%;height:21px}.rival .special-meter{margin-left:auto}.special-meter>div{display:flex;justify-content:space-between;font-size:8px;letter-spacing:.08em;color:#aebac3;align-items:center}
+.special-meter button,.special-meter b{font-size:9px;color:var(--yellow);letter-spacing:.03em}.rival .special-meter b{color:#ff9273}
+.special-meter>i{display:block;height:5px;background:#ffffff25;margin-top:3px;transform:skewX(-13deg)}.special-meter>i>span{display:block;height:100%;width:0;background:var(--yellow);transition:width .12s}.rival .special-meter>i>span{background:#ff7758}
+.special-meter.ready>i{box-shadow:0 0 8px #eaff4e7a}.super-trigger{padding:3px}
+#controls{position:fixed;z-index:4;left:0;right:0;bottom:101px;display:flex;justify-content:center;gap:13px;font-size:9px;color:#c7cdd0;letter-spacing:.04em}
+#controls span{white-space:nowrap}kbd{display:inline-block;padding:4px 5px;background:#111a23db;border:1px solid #a8afb552;border-radius:2px;font:600 10px var(--body);margin-right:4px;color:#fff}
+footer{position:fixed;left:25px;bottom:12px;z-index:3;font-size:8px;letter-spacing:.12em;color:#7d8e9e}
+body:not(.in-game) footer{display:none}
+#loading{position:fixed;inset:0;background:#080c13;z-index:30;display:flex;justify-content:center;align-items:center;flex-direction:column}
+.loader-logo{width:280px;max-width:60vw}
+#loading h2{font:900 25px var(--display);letter-spacing:-.04em;margin:30px 0 9px}
+#loading p{font-size:12px;color:#9da7af}.load-track{width:250px;height:3px;background:#29313a;margin:15px}.load-track i{display:block;height:100%;background:var(--yellow);width:0;transition:width .2s}#loading small{font-size:9px;color:#6c7883;letter-spacing:.2em}
+.modal{position:fixed;inset:0;z-index:20;background:#05090ed9;display:flex;align-items:center;justify-content:center}
+.modal-card{width:min(92vw,440px);max-height:88vh;overflow:auto;background:#101923;border-top:4px solid var(--yellow);padding:32px}
+.modal-card h2{font:900 42px/.98 var(--display);letter-spacing:-.06em;margin:14px 0 22px}
+.modal-card p{font-size:15px;line-height:1.4;color:#c2c9cf}
+.modal-card .primary{width:100%;min-width:0}
+.eyebrow{color:var(--yellow);letter-spacing:.15em;font-size:10px}
+.secondary{display:block;padding:14px;width:100%;margin-top:10px;border:1px solid #4f626f;letter-spacing:.09em;font-size:12px}
+.help-card{width:min(90vw,600px)}.help-card p{font-size:14px}.help-card .credit-text{font-size:10px}
+#notice{position:fixed;left:50%;bottom:15px;transform:translateX(-50%);padding:12px 20px;background:#111c27;border:1px solid var(--yellow);color:#fff;z-index:40;text-align:center;max-width:90vw;font-size:14px}
+#callout{position:fixed;top:36%;left:0;right:0;text-align:center;font:900 clamp(40px,8vw,105px)/1 var(--display);font-style:italic;letter-spacing:-.07em;color:var(--yellow);text-shadow:4px 6px 0 #03070ca8;z-index:5;pointer-events:none}
+#hit-label{position:fixed;top:25%;font:900 18px var(--display);letter-spacing:-.04em;color:var(--yellow);z-index:5;pointer-events:none}
+#fighter-presentation{position:fixed;bottom:8vh;left:6%;right:6%;z-index:6;display:flex;justify-content:space-between;align-items:end;gap:15px;pointer-events:none}
+#fighter-presentation>div{display:grid;gap:5px;border-left:4px solid var(--yellow);padding:8px 16px;background:linear-gradient(90deg,#090e17e0,transparent)}
+#fighter-presentation small{font-size:12px;color:var(--yellow);letter-spacing:.15em;text-transform:uppercase}#fighter-presentation strong{font:900 clamp(25px,5vw,65px)/1 var(--display);letter-spacing:-.04em;text-transform:uppercase}#fighter-presentation span{font-size:16px}
+#skip-presentation{pointer-events:auto;border-bottom:2px solid var(--yellow);padding:8px;background:#101923dc;font-size:12px}
+body.showcase #hud,body.showcase #controls,body.showcase #touch{visibility:hidden}
+body.cinematic #controls,body.cinematic #touch{visibility:hidden}
+body.cinematic:after,body.cinematic:before{content:'';position:fixed;left:0;right:0;height:4vh;background:#05080d;pointer-events:none;z-index:5}body.cinematic:after{bottom:0}body.cinematic:before{top:0}
+.special-speech,#taunt-bubble{position:fixed;z-index:7;transform:translate(-50%,-100%);background:#f4f1d9;color:#172029;border-left:4px solid var(--yellow);padding:9px 12px;max-width:min(29vw,240px);font-size:15px;line-height:1.12;font-weight:600;box-shadow:3px 4px 0 #050810b8;pointer-events:none}
+.special-speech:after,#taunt-bubble:after{content:'';position:absolute;bottom:-7px;left:45%;border-top:8px solid #f4f1d9;border-right:9px solid transparent}
+#special-opponent-line{background:#d8ebf5;border-color:var(--blue)}#special-opponent-line:after{border-top-color:#d8ebf5}#taunt-bubble strong{display:block;font-size:11px;text-transform:uppercase;color:#753e1e;margin-bottom:4px}
+#fight-commentary{position:fixed;z-index:7;bottom:16px;left:50%;transform:translateX(-50%);width:min(760px,78vw);display:grid;grid-template-columns:1fr 18px 1fr;gap:9px;background:linear-gradient(100deg,#1d1822ed,#132939ed);border-top:2px solid #e7ff4c;border-bottom:1px solid #75828e;padding:7px 10px}
+.commentary-live{position:absolute;top:-15px;left:0;background:var(--red);padding:1px 8px;font-size:8px;letter-spacing:.12em}
+.commentator{display:flex;gap:8px;align-items:center;min-width:0}.commentator img{width:42px;height:47px;object-fit:cover;border:1px solid #78919e}
+.commentator>div{min-width:0}.commentator b{display:block;font-size:10px;letter-spacing:.08em;color:var(--yellow);margin-bottom:3px}.commentator span{display:block;font-size:13px;line-height:1.1}.karan b{color:var(--blue)}
+.commentary-vs{align-self:center;font:900 12px var(--display);color:#8599aa}.commentator.speaking img{border-color:var(--yellow)}
+body.cinematic #fight-commentary{bottom:5vh}
+#touch{position:fixed;left:4%;right:4%;bottom:105px;display:flex;justify-content:space-between;z-index:8;pointer-events:none}#touch button{pointer-events:auto;touch-action:none;user-select:none;width:48px;height:48px;border:1px solid #ffffff60;border-radius:3px;background:#172434c9;font-size:10px}
+.dpad{display:grid;grid-template-columns:repeat(3,45px);grid-template-rows:repeat(2,45px);gap:4px}.dpad [data-input=jump]{grid-column:2}.dpad [data-input=left]{grid-column:1;grid-row:2}.dpad [data-input=crouch]{grid-column:2;grid-row:2}.dpad [data-input=right]{grid-column:3;grid-row:2}
+.actions{display:grid;grid-template-columns:repeat(3,48px);gap:4px}.actions [data-input=special]{color:var(--yellow);border-color:var(--yellow)!important}.actions [data-input=grabSignature]{font-size:8px!important}#touch button.active{background:#eaff4e70}
+.room-drawer{position:fixed;z-index:15;right:25px;top:78px;width:330px;max-width:90vw;padding:22px;background:#101923f5;border:1px solid #627684;border-top:3px solid var(--blue);box-shadow:0 15px 80px #0009}
+.room-title{display:flex;justify-content:space-between;align-items:center}.room-title h2{font:900 22px var(--display);letter-spacing:-.05em;margin:0}.room-title button{font-size:22px}
+.room-drawer p{font-size:13px;color:#b4c0cb;line-height:1.3}
+.room-drawer .primary{min-width:0;width:100%;font-size:16px;margin:16px 0}
+.room-join{display:flex;border:1px solid #607382}.room-join input{width:100%;min-width:0;padding:10px;border:0;background:#070d14;color:#fff;text-transform:uppercase;letter-spacing:.15em}.room-join button{padding:0 13px;background:#36546a;font-size:13px}
+#room-error{color:#ff9a82;font-size:12px}
+#room-code-label{font:900 30px var(--display);display:block;color:var(--yellow);letter-spacing:.1em;margin:6px 0}
+#room-copy,#room-leave{border:1px solid #526a7c;padding:7px 12px;font-size:11px;margin-right:7px}
+.keyboard-mode{display:block;margin-top:18px;border-bottom:1px solid #687c89;font-size:10px;color:#8ea7b8;padding:6px 0}
+body.in-game .corner-brand{width:135px;top:15px}body.in-game .quick-controls{top:12px}
+@media(max-width:900px){.corner-brand{left:18px;top:18px;width:155px}.quick-controls{right:18px;top:16px;gap:10px}.quick-controls button{font-size:9px}.matchup{padding:20px 18px}.selection-kicker{display:none}.matchup-title h1{font-size:30px}.fighter-story{width:22vw}.fighter-story h2{font-size:24px}.fighter-story p{font-size:12px}.matchup-stage{left:20px;right:20px;top:23%;height:30%}.matchup-controls{width:80vw}.matchup-pickers{right:18px;bottom:31vh}.fighter-card b{font-size:10px}.matchup-roster{gap:5px}.matchup-modes button{font-size:11px;padding:12px 6px}.primary{min-width:175px;font-size:18px;padding:14px 17px}.matchup-actions{gap:13px}.arena-card{padding:6px 8px}#hud{top:58px}.fighter-label #player-name,.fighter-label #opponent-name{font-size:14px}#controls{font-size:8px;gap:7px}#fight-commentary{width:80vw}.commentator span{font-size:12px}}
+@media(max-height:650px){.corner-brand{top:15px;width:140px}.quick-controls{top:13px}.matchup{padding:14px 22px}.matchup-title h1{font-size:27px}.selection-kicker{display:none}#pick-status{margin:5px 0;font-size:10px}.fighter-story p{display:none}.fighter-story strong{font-size:10px}.fighter-story h2{font-size:25px}.matchup-stage{top:21%;height:27%}.matchup-controls{gap:6px}.fighter-card{height:72px}.arena-card{height:44px}.difficulty-buttons button{padding:5px 8px}.matchup-pickers{bottom:255px}.primary{padding:11px 20px;font-size:18px}.matchup-modes button{padding:10px 8px}.health{height:15px}#fight-commentary{bottom:8px;padding:5px 9px}.commentator img{height:38px;width:33px}.commentator span{font-size:11px}.commentator b{font-size:9px}#controls{bottom:75px;font-size:8px}#hud{top:52px}footer{bottom:5px}#fighter-presentation{bottom:8vh}}
+@media(max-width:600px){.corner-brand{width:115px;top:12px;left:12px}.quick-controls{right:12px;top:12px;gap:8px}.quick-controls button{font-size:8px}.matchup{padding:65px 12px 16px}.matchup-title h1{font-size:25px}.matchup-stage{left:13px;right:13px;top:25%;height:22%}.fighter-story{width:29vw;padding:8px 0}.fighter-story h2{font-size:18px}.fighter-story p,.fighter-story strong{display:none}.fighter-story small{font-size:8px}.matchup-controls{width:96vw;gap:8px}.matchup-roster{gap:4px}.fighter-card{height:70px}.fighter-card b{font-size:8px;bottom:4px;left:3px}.fighter-card[data-slot]:not([data-slot=""]):before{font-size:7px}.arena-card{padding:5px;height:47px}.arena-card span{font-size:9px}.arena-card small{font-size:7px}.arena-card.selected:after{display:none}.matchup-pickers{bottom:258px;right:12px}.difficulty-buttons button{font-size:9px}.matchup-actions{gap:8px}.matchup-modes button{font-size:9px;padding:11px 5px}.primary{min-width:103px;padding:13px 14px;font-size:16px}#hud{left:3%;right:3%;gap:7px;grid-template-columns:1fr 50px 1fr}#hud .fighter-label small{font-size:7px}.fighter-label #player-name,.fighter-label #opponent-name{font-size:10px}#hp1,#hp2{display:none}.clock strong{font-size:35px}.clock small,.clock>span{font-size:6px}.special-meter{max-width:80%}.special-meter>div>span{display:none}.special-meter>div{justify-content:start}.rival .special-meter>div{justify-content:end}#controls{display:none}.special-speech,#taunt-bubble{max-width:38vw;font-size:12px}#fight-commentary{width:95vw;gap:6px;grid-template-columns:1fr 11px 1fr;bottom:7px}.commentator{gap:5px}.commentator img{width:27px;height:36px}.commentator b{font-size:8px}.commentator span{font-size:10px}footer{display:none}.room-drawer{right:12px;top:65px}}
+@media(pointer:coarse){#controls{display:none}#touch{bottom:92px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.arena-card[data-arena=filmcity]{background-image:url('./assets/ui/arena-filmcity.jpg')}
+.arena-card[data-arena=akhada]{background-image:url('./assets/ui/arena-akhada.jpg')}
+.arena-card[data-arena=cinema]{background-image:url('./assets/ui/arena-cinema.jpg')}
+@media(max-width:600px){.matchup-roster{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.rival .special-meter button{color:#ff9273}
+
+#game-shell{position:fixed;inset:0;overflow:hidden;background:#090f17}
+#rotate-device[hidden]{display:none}
+#rotate-device{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;padding:24px;background:radial-gradient(ellipse at center,#1b2b3b,#070b12 70%);text-align:center}
+#rotate-device img{width:90px;border-radius:22px}
+#rotate-device h1{font:900 27px/.98 var(--display);margin:10px 0 0;letter-spacing:-.04em}
+#rotate-device p{font-size:17px;color:#c0ccd4;margin:0}
+#rotate-device small{font-size:10px;letter-spacing:.22em;color:var(--yellow)}
+.phone-turn{width:66px;height:37px;border:3px solid #dbe8ef;border-radius:8px;transform:rotate(-15deg);margin-top:12px;box-shadow:inset 5px 0 #dbe8ef}
+body.mobile-device #game-shell{inset:auto;left:50%;top:50%;width:min(100vw,177.7778vh);height:min(100vh,56.25vw);transform:translate(-50%,-50%);contain:layout paint}
+body.mobile-device{background:#020407}
+.primary{clip-path:none;border-radius:13px;box-shadow:0 4px 0 #879523,0 7px 18px #0005;transition:background .15s,transform .15s}
+.primary:active{transform:translateY(2px);box-shadow:0 2px 0 #879523}
+.secondary,.room-join,.room-join input,.room-drawer input{border-radius:11px}
+.modal-card{border-radius:22px;border-top-width:3px;box-shadow:0 24px 80px #0008}
+.secondary{background:#182631;transition:background .15s}.secondary:hover{background:#243b4c}
+.room-drawer{border-radius:18px}
+.fighter-card,.fighter-card:hover{transform:none;border-radius:11px}
+.fighter-card .roster-photo,.fighter-card .fighter-photo{transform:scale(1.08)}
+.fighter-card b,.fighter-card[data-slot]:not([data-slot=""]):before{transform:none}
+.fighter-card[data-slot]:not([data-slot=""]):before{border-radius:5px}
+.arena-card{border-radius:11px;overflow:hidden}
+.arena-selector{grid-template-columns:repeat(3,1fr)}
+.health{transform:none;border-radius:7px;overflow:hidden}
+.health i{border-radius:3px}
+.special-meter>i{transform:none;border-radius:4px;overflow:hidden}
+.special-speech,#taunt-bubble{border-radius:10px}
+#fight-commentary{border-radius:12px;border-bottom:1px solid #75828e}
+.commentary-live{border-radius:5px 5px 0 0}
+.commentator img{border-radius:8px}
+#loading{display:block;background:#071018}
+.loading-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.loading-title{position:absolute;left:25%;right:25%;top:38%;height:10%;font-size:0!important;color:transparent;margin:0!important}
+.loading-live{position:absolute;left:28%;right:28%;top:49%;height:16%;padding:12px 6px;background:linear-gradient(90deg,#08131cf5,#09131c,#08131cf5);display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+#loading .loading-live p{margin:0;text-align:center;font-size:clamp(12px,2vw,25px);color:#cbd0d6}
+#loading .load-track{width:92%;height:8px;border-radius:7px;margin:15px 0 0;background:#26303a;overflow:hidden}
+#loading .load-track i{border-radius:7px}
+@media(max-aspect-ratio:16/9){.loading-art{object-fit:cover}}
+@media(max-height:500px){body.mobile-device .matchup-controls{width:76%;gap:5px}body.mobile-device .fighter-card{height:54px}body.mobile-device .arena-card{height:36px}body.mobile-device .matchup-modes button{padding:8px 6px}body.mobile-device .primary{padding:9px 18px;font-size:16px}body.mobile-device .matchup-title h1{font-size:23px}body.mobile-device .matchup-stage{top:23%;height:25%}body.mobile-device .matchup-pickers{bottom:201px;right:20px}body.mobile-device #fight-commentary{width:75%;bottom:6px}body.mobile-device #touch{bottom:72px}body.mobile-device #touch button{width:40px;height:40px}body.mobile-device .dpad{grid-template-columns:repeat(3,37px);grid-template-rows:repeat(2,37px)}body.mobile-device .actions{grid-template-columns:repeat(3,40px)}body.mobile-device .commentator img{width:25px;height:30px}body.mobile-device .commentator span{font-size:10px}body.mobile-device #hud{top:43px}body.mobile-device .corner-brand{width:110px;top:10px}body.mobile-device .quick-controls{top:8px}body.mobile-device .quick-controls button{font-size:8px}body.mobile-device .loading-live{padding:6px 0}body.mobile-device #loading .load-track{height:5px}}

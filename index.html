@@ -1,34 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0a0d15" />
-  <title>Aaja Bhid Le — Deployment Successful</title>
-  <style>
-    :root { color-scheme: dark; font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 25%, #202c45 0%, #0a0d15 55%, #07090e 100%); color: #f8fafc; padding: 24px; }
-    .panel { width: min(100%, 680px); text-align: center; padding: 56px 28px; border: 1px solid #343b4a; background: rgba(15, 20, 32, .78); border-radius: 24px; box-shadow: 0 25px 90px #0008; }
-    .mark { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1; font-weight: 950; font-style: italic; letter-spacing: -.07em; background: linear-gradient(110deg,#f9b32c,#ff5c29 60%,#ed2940); background-clip: text; color: transparent; }
-    .tag { margin: 15px 0 35px; text-transform: uppercase; letter-spacing: .28em; color: #afb7c5; font-size: .72rem; }
-    .status { display: inline-flex; gap: 9px; align-items: center; color: #a4f3c2; background: #103225; border: 1px solid #246848; border-radius: 100px; padding: 9px 16px; font-size: .86rem; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #64e49b; box-shadow: 0 0 12px #64e49b; }
-    h1 { font-size: clamp(1.45rem, 4vw, 2.4rem); margin: 26px 0 12px; }
-    p { color: #bac3d2; line-height: 1.7; }
-    .url { display: inline-block; color: #ffe779; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
-    footer { margin-top: 35px; color: #7e899c; font-size: .8rem; }
-  </style>
-</head>
-<body>
-  <main class="panel">
-    <div class="mark">AAJA BHID LE</div>
-    <div class="tag">The Fighting Game Platform</div>
-    <div class="status"><span class="dot"></span> Test deployment online</div>
-    <h1>Website Successfully Connected!</h1>
-    <p>If you're viewing this page at <span class="url">aajabhidle.com</span>, your GitHub → Cloudflare Pages → custom domain deployment is working.</p>
-    <p>This is a temporary test page. BollyBrawl is coming next.</p>
-    <footer>AAJA BHID LE · DEPLOYMENT TEST v1.0</footer>
-  </main>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" type="image/png" sizes="32x32" href="./assets/ui/icon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="./assets/ui/icon-180.png"><meta name="theme-color" content="#090f17"><link rel="manifest" href="./site.webmanifest"><title>BollyBrawl — The Bollywood Fighting Game</title><link rel="stylesheet" href="style.css?v=pages16"><script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script></head>
+<body><div id="rotate-device" hidden role="dialog" aria-modal="true" aria-label="Rotate your phone">
+<img src="./assets/ui/icon-192.png" alt="BollyBrawl"><div class="phone-turn" aria-hidden="true"></div><h1>ROTATE TO FIGHT</h1><p>Turn your phone sideways.</p><small>LANDSCAPE / 16:9</small></div><div id="game-shell"><canvas id="arena" aria-label="3D fighting arena"></canvas><div class="grain"></div>
+<div class="corner-brand"><img src="./assets/ui/bollybrawl-wordmark.webp" alt="BollyBrawl"></div>
+<div class="quick-controls"><button id="sound" aria-label="Toggle sound">SOUND ON</button><button id="pause" aria-label="Pause game">PAUSE</button><button id="help">CONTROLS</button></div>
+<div id="hud" class="hidden"><div class="fighter-hud"><div class="fighter-label"><span><b>01</b> <span id="player-name">ASLI TIGER</span> <small id="p1-label">YOU</small></span><span id="hp1">100</span></div><div class="health"><i id="bar1"></i></div><div class="rounds" id="wins1">○ ○</div><div class="special-meter"><div><span>DOMINANCE</span><button id="special-label1" class="super-trigger" type="button" aria-label="Activate super move">0%</button></div><i><span id="special-bar1"></span></i></div></div><div class="clock"><small>ROUND <span id="round">01</span></small><strong id="timer">60</strong><span id="mode-label">VS CPU</span></div><div class="fighter-hud rival"><div class="fighter-label"><span id="hp2">100</span><span><small id="p2-label">CPU</small> <span id="opponent-name">RIVAL</span> <b>02</b></span></div><div class="health"><i id="bar2"></i></div><div class="rounds" id="wins2">○ ○</div><div class="special-meter"><div><span>DOMINANCE</span><button id="special-label2" class="super-trigger" type="button" aria-label="Player 2 super move">0%</button></div><i><span id="special-bar2"></span></i></div></div></div>
+<div id="loading"><img class="loading-art" src="./assets/ui/loading-ring.webp" alt=""><h2 class="loading-title">LOADING THE RING</h2><div class="loading-live"><p id="load-status">Preparing your fighters</p><div class="load-track"><i id="load-fill"></i></div></div></div>
+<section id="menu" class="hidden matchup">
+ <div class="matchup-title"><p class="selection-kicker">THE BOLLYWOOD FIGHTING GAME</p><h1>FIGHTER SELECT</h1><p id="pick-status" aria-live="polite"></p></div><div class="matchup-stage">
+  <article class="fighter-story" id="player-story"><small>01 · YOUR FIGHTER</small><h2 id="selected-fighter-name">ASLI TIGER</h2><p id="player-story-copy"></p><strong id="player-special-name"></strong><p id="player-special-copy"></p></article>
+  <span class="matchup-versus" aria-hidden="true">VS</span>
+  <article class="fighter-story rival-story" id="rival-story"><small id="rival-story-label">02 · CPU OPPONENT</small><h2 id="selected-rival-name">ASLI TIGER</h2><p id="rival-story-copy"></p><strong id="rival-special-name"></strong><p id="rival-special-copy"></p></article>
+ </div>
+ <div class="matchup-controls">
+  <div class="matchup-roster" aria-label="Fighter roster"><button class="fighter-card unlocked" data-fighter="safari"><span class="fighter-photo"></span><b>ASLI TIGER</b></button><button class="fighter-card playable" data-fighter="spin"><span class="roster-photo jon-photo"></span><b>JON THE DON</b></button><button class="fighter-card playable" data-fighter="blast"><span class="roster-photo tiger-photo"></span><b>TIGER KHAUF</b></button><button class="fighter-card playable" data-fighter="slap"><span class="roster-photo baburao-photo"></span><b>BABURAO</b></button><button class="fighter-card playable" data-fighter="burst"><span class="roster-photo bawa-photo"></span><b>BAWA</b></button><button class="fighter-card playable" data-fighter="spit"><span class="roster-photo vimal-photo"></span><b>VIMAL MAN</b></button>  </div>
+  <div class="matchup-pickers">
+   <select id="player-fighter" hidden aria-label="Player 1"></select>
+   <select id="rival-fighter" hidden aria-label="Opponent"></select>
+   <div id="difficulty-control" class="difficulty-buttons" role="group" aria-label="CPU difficulty">
+ <span>CPU</span><button type="button" data-difficulty="easy" aria-pressed="false">Easy</button>
+ <button type="button" data-difficulty="normal" aria-pressed="true">Normal</button>
+ <button type="button" data-difficulty="hard" aria-pressed="false">Hard</button>
+</div>
+  </div>
+  <div class="arena-selector" role="group" aria-label="Select arena">
+<button data-arena="filmcity" class="arena-card selected"><span>FILM CITY</span><small>BACKLOT</small></button>
+<button data-arena="akhada" class="arena-card"><span>DHOBI PACHAD</span><small>AKHADA</small></button>
+<button data-arena="cinema" class="arena-card"><span>MONSOON</span><small>CINEMA</small></button>
+</div>
+  <div class="matchup-actions">
+   <div class="matchup-modes" aria-label="Match mode"><button data-mode="cpu" class="selected">VS CPU</button><button data-mode="online">2 PLAYER</button><button data-mode="training">TRAINING</button></div>
+   <button id="start" class="primary">FIGHT</button>
+  </div>
+  <p class="matchup-arena"></p>
+ </div>
+</section>
+<section id="room-panel" class="hidden room-drawer" aria-label="Two-player room">
+ <div class="room-title"><h2>VERSUS ROOM</h2><button id="room-close" aria-label="Close room panel">CLOSE</button></div>
+ <p>Open this game address on both devices. Share a code, pick your fighters, then both press READY.</p>
+ <div id="room-connect"><button id="room-create" class="primary">CREATE ROOM</button><div class="room-join"><input id="room-code" maxlength="6" autocomplete="off" placeholder="6-LETTER CODE" aria-label="Room code"><button id="room-join">JOIN</button></div></div>
+ <div id="room-session" hidden><small>ROOM CODE</small><strong id="room-code-label"></strong><button id="room-copy">COPY CODE</button><p id="room-status" role="status"></p><button id="room-leave">LEAVE ROOM</button></div>
+ <p id="room-error" role="alert"></p>
+ <button data-mode="local" class="keyboard-mode">PLAY ON THE SAME KEYBOARD</button>
+</section>
+<div id="notice" class="hidden" role="status"></div>
+<div id="fighter-presentation" class="hidden"><div aria-live="polite"><small></small><strong></strong><span></span></div><button id="skip-presentation" type="button">Skip <kbd>Enter</kbd></button></div>
+
+<div id="special-attacker-line" class="special-speech" aria-live="polite" hidden></div>
+<div id="special-opponent-line" class="special-speech" aria-live="polite" hidden></div>
+<aside id="fight-commentary" aria-label="Gali Live commentary" aria-live="polite" hidden>
+<div class="commentary-live">GALI LIVE</div>
+<article class="commentator thoko"><img src="./assets/ui/commentator-thoko.png" alt="Thoko Machine"><div><b>THOKO MACHINE</b><span id="thoko-line"></span></div></article>
+<div class="commentary-vs">VS</div>
+<article class="commentator karan"><img src="./assets/ui/commentator-karan.png" alt="Kala Khatha with Karan"><div><b>KALA KHATHA WITH KARAN</b><span id="karan-line"></span></div></article>
+</aside>
+<div id="taunt-bubble" class="hidden" aria-live="polite"><strong></strong><span></span></div><div id="callout" aria-live="polite"></div><div id="hit-label"></div><div id="special-banner" class="hidden"><small></small><strong></strong><span id="special-pass"></span></div>
+<section id="pause-panel" class="hidden modal"><div class="modal-card"><div class="eyebrow">TAKE A BREATH</div><h2>PAUSED</h2><button id="resume" class="primary">RESUME</button><button id="quit" class="secondary">MAIN MENU</button></div></section>
+<section id="result" class="hidden modal"><div class="modal-card"><div class="eyebrow" id="result-eyebrow">MATCH RESULT</div><h2 id="result-title">YOU WIN.</h2><p id="result-copy"></p><button id="rematch" class="primary">REMATCH</button><button id="result-menu" class="secondary">MAIN MENU</button></div></section>
+<footer><div id="location">FILM CITY BACKLOT</div></footer>
+<div id="controls" class="hidden"><span><kbd>A</kbd><kbd>D</kbd> MOVE</span><span><kbd>W</kbd> JUMP</span><span><kbd>S</kbd> CROUCH</span><span><kbd>J</kbd> PUNCH</span><span><kbd>K</kbd> KICK</span><span><kbd>U</kbd> SWEEP</span><span><kbd>I</kbd> GRAB / SIGNATURE</span><span><kbd>SPACE / L</kbd> SPECIAL</span><span><kbd>⇧</kbd> BLOCK</span></div>
+<section id="help-panel" class="hidden modal"><div class="modal-card help-card"><div class="eyebrow">KNOW YOUR MOVES</div><h2>FIGHT SMART.</h2><p><b>Player 1:</b> A / D move · W jump · S crouch · J punch · K kick · U sweep · Space / L special · Shift block.</p><p><b>Player 2 (local):</b> ← / → move · ↑ jump · ↓ crouch · Numpad 1 punch · Numpad 2 kick · Numpad 3 sweep · Numpad 0 / number 0 special · Right Shift block. Number-row 1 / 2 / 3 also work.</p><p>Press I for your signature when ready, or a standard grab while it recharges. Hold Down and press I for a standard grab at any time. Player 2 uses 4. Press Enter to skip an entrance or victory scene.</p><p>Chain up to three punches and kicks. Try K K J, J K J, J K K, or J J J. Tap the next attack while the current one is playing.</p><p>Hold block to reduce damage. Jump over sweeps. Crouch beneath standing punches. Build DOMINANCE by landing attacks. A full bar or health at 25 or below unlocks your fighter special. Emergency use is once per round. Practice starts with a full special bar and unlimited time. R restarts a match. Esc pauses.</p><hr><p class="credit-text">Fighters, portraits and audio supplied by you. Original 3D environments with CC0 materials from <a href="https://polyhaven.com/" target="_blank" rel="noreferrer">Poly Haven</a>. Rendering by Three.js (MIT). 2021 Tata Safari by BHP3D, CC BY 4.0, adapted for runtime use. Font licenses and material credits are included with the game.</p><button id="help-close" class="primary">BACK</button></div></section>
+<div id="touch" class="hidden"><div class="dpad"><button data-input="left" aria-label="Move left">←</button><button data-input="jump" aria-label="Jump">↑</button><button data-input="right" aria-label="Move right">→</button><button data-input="crouch" aria-label="Crouch">↓</button></div><div class="actions"><button data-input="block">GUARD</button><button data-input="sweep">SWEEP</button><button data-input="grabSignature">GRAB / SIGNATURE</button><button data-input="special" id="touch-special">SPECIAL</button><button data-input="punch">PUNCH</button><button data-input="kick">KICK</button></div></div>
+<script type="module" src="main.js?v=pages16"></script></div></body></html>
+
+
+
+
+
+
+
+
+
+
+
+
+

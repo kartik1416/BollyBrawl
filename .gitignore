@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars*
+.env*
+*.log
+*.zip
+*.py
+*-inspection.png
+outfit/
+assets/*.glb
+assets/entry-*.wav
+assets/its-done-bro.mp3
+assets/ui/home-reference.png
+assets/ui/outfit-reference.png
+assets/ui/arena.png
+assets/ui/arena-street.jpg

@@ -1,0 +1,10 @@
+Poly Haven PBR materials
+https://polyhaven.com/a/asphalt_02
+https://polyhaven.com/a/plastered_wall_02
+https://polyhaven.com/a/red_brick
+https://polyhaven.com/a/dirt_floor
+Downloaded base color at 2K and OpenGL normals/roughness at 1K.
+All Poly Haven assets are CC0.
+https://polyhaven.com/license
+
+Film City Backlot, Dhobi Pachad Akhada and Monsoon Cinema are original modular 3D sets authored for BollyBrawl. They are fictional environments inspired by Indian film sets, washing courtyards and single-screen cinemas.

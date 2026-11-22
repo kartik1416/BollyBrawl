@@ -1,0 +1,58 @@
+[
+  {
+    "name": "asli-tiger",
+    "originalBytes": 13619808,
+    "bytes": 1230048,
+    "reduction": 91,
+    "verified": true
+  },
+  {
+    "name": "jon-the-don",
+    "originalBytes": 13127768,
+    "bytes": 1324716,
+    "reduction": 90,
+    "verified": true
+  },
+  {
+    "name": "tiger-khauf",
+    "originalBytes": 13111052,
+    "bytes": 1333660,
+    "reduction": 90,
+    "verified": true
+  },
+  {
+    "name": "baburao",
+    "originalBytes": 13753440,
+    "bytes": 1420620,
+    "reduction": 90,
+    "verified": true
+  },
+  {
+    "name": "bawa",
+    "originalBytes": 13815532,
+    "bytes": 1399216,
+    "reduction": 90,
+    "verified": true
+  },
+  {
+    "name": "vimal-man",
+    "originalBytes": 13180164,
+    "bytes": 1326820,
+    "reduction": 90,
+    "verified": true
+  },
+  {
+    "name": "safari-runtime",
+    "originalBytes": 24622012,
+    "bytes": 4133024,
+    "reduction": 83,
+    "verified": true
+  },
+  {
+    "name": "bleachers",
+    "originalBytes": 62588,
+    "bytes": 8828,
+    "reduction": 86,
+    "verified": true
+  }
+]
