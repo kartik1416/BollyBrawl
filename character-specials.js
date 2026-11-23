@@ -1,5 +1,6 @@
+import {resolveAsset} from './media-config.js?v=editor17';
 import * as THREE from 'three';
-import {SPECIALS,specialLanding} from './combat.js?v=pages16';
+import {SPECIALS,specialLanding} from './combat.js?v=editor17';
 
 const {smoothstep,lerp,clamp}=THREE.MathUtils;
 const v=(x,y,z)=>new THREE.Vector3(x,y,z);
@@ -50,7 +51,7 @@ export function createCharacterSpecials(scene,{pose,solveArm,setFists,resetPose,
  const tracer=new THREE.Mesh(new THREE.CylinderGeometry(.011,.011,1,6),orange);
  tracer.rotation.z=Math.PI/2;
 
- const packetTexture=new THREE.TextureLoader().load('./assets/vimal-packet.webp');
+ const packetTexture=new THREE.TextureLoader().load(resolveAsset('./assets/vimal-packet.webp'));
  packetTexture.colorSpace=THREE.SRGBColorSpace;
  const packetFace=new THREE.MeshBasicMaterial({map:packetTexture});
  const packet=new THREE.Mesh(new THREE.BoxGeometry(.10,.126,.015),

@@ -81,3 +81,19 @@ node cloudflare/rooms.test.mjs
 ## Assets
 
 User-provided characters, reference art and audio are included as supplied/derived assets. Their inclusion does not grant third-party likeness, music or trademark rights. Material and font license/attribution files are retained in their asset folders. Three.js and Draco licenses are under `vendor/`. All three arenas are generated from the game's authored scene geometry rather than the removed Braithwaite scan.
+
+## Media editor
+
+Open `/admin` on the deployed Worker and sign in with the Admin credentials supplied for this installation. The password is verified server-side with a salted PBKDF2 verifier; no plaintext password is in the browser bundle. Sessions use an HttpOnly cookie and expire after eight hours. Login attempts are rate limited and mutation requests require the same origin.
+
+Select an audio or image slot, choose a replacement, preview it and click **Save replacement**. **Restore original** removes the override. Supported files: MP3/WAV/OGG and PNG/JPEG/WebP, up to 8 MB per slot. SVG/HTML uploads are not accepted. Updates apply when players next reload the game. Model GLBs and skeletons cannot be replaced through this editor.
+
+Uploads and slot settings persist in the `CONTENT` SQLite-backed Durable Object; migration `v2` provisions it with the normal Worker deployment. There is no additional R2 or D1 setup for these bounded media slots. Large media libraries should move to object storage later. The Pages-only adapter does not currently include this editor backend; use the root Worker deployment.
+
+Character templates now load through a queue with four download/decode attempts, download timeouts and GLB validation. Existing previews remain visible until the requested pair is ready, and the fighter roster warms its cache in the background. A permanent network outage can still prevent new downloads, but transient requests no longer fail on the first interruption.
+
+Editor backend integration check (against local Wrangler):
+
+```sh
+CONTENT_TEST_URL=http://127.0.0.1:8802 ADMIN_TEST_PASSWORD=<configured-password> node cloudflare/content.test.mjs
+```

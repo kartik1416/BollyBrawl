@@ -1,17 +1,19 @@
+import {initMediaConfig,resolveAsset} from './media-config.js?v=editor17';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
-import {createArenaManager,ARENAS} from './arenas.js?v=pages16';
-import {createRoomClient} from './room-client.js?v=pages16';
-import {createAudioMixer} from './audio-mixer.js?v=pages16';
-import {createFightDialogue} from './fight-dialogue.js?v=pages16';
-import {createFighterPresentations} from './fighter-presentations.js?v=pages16';
+import {createArenaManager,ARENAS} from './arenas.js?v=editor17';
+import {createRoomClient} from './room-client.js?v=editor17';
+import {createAudioMixer} from './audio-mixer.js?v=editor17';
+import {createFightDialogue} from './fight-dialogue.js?v=editor17';
+import {createFighterPresentations} from './fighter-presentations.js?v=editor17';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {strikePhases,signatureMoves,signatureAmount,warmupPose} from './fight-motion.js?v=pages16';
-import {createBleachers} from './bleachers.js?v=pages16';
+import {strikePhases,signatureMoves,signatureAmount,warmupPose} from './fight-motion.js?v=editor17';
+import {createBleachers} from './bleachers.js?v=editor17';
 import {clone} from 'three/addons/utils/SkeletonUtils.js';
-import {createCharacterSpecials} from './character-specials.js?v=pages16';
-import {STEP,WARMUP_SECONDS,createMatch,advance,cpuInput,SPECIALS,specialLanding,specialReady} from './combat.js?v=pages16';
+import {createCharacterSpecials} from './character-specials.js?v=editor17';
+import {STEP,WARMUP_SECONDS,createMatch,advance,cpuInput,SPECIALS,specialLanding,specialReady} from './combat.js?v=editor17';
 
+await initMediaConfig();
 const $=id=>document.getElementById(id),canvas=$('arena');
 const gameShell=$('game-shell');
 const viewport=()=>({width:gameShell.clientWidth||innerWidth,height:gameShell.clientHeight||innerHeight});
@@ -40,24 +42,26 @@ const stories={
  burst:['A hard-edged enforcer in a crisp white kurta.','Pachaas Tola','Four shots. Keep your guard ready.'],
  spit:['A stern inspector with an unorthodox last resort.','Saffron Spit','Packet, pinch, then a saffron spray.'],
 };
-const assetVersion='?v=pages16';
+const assetVersion='?v=editor17';
 const templates=new Map(), viewCache=[new Map(),new Map()];
+let modelQueue=Promise.resolve();
 let visibleRoster=null, previewPending=false;
 let starting=false, voiceTriggered=false;
 function templateFor(kind){
  if(!templates.has(kind)){
-  const task=loadAsset(kind,'./assets/models/'+roster[kind].asset+assetVersion).catch(error=>{templates.delete(kind);throw error;});
+  const task=modelQueue.then(()=>loadAsset(kind,'./assets/models/'+roster[kind].asset+assetVersion)).catch(error=>{templates.delete(kind);throw error;});
+  modelQueue=task.catch(()=>{});
   templates.set(kind,task);
  }
  return templates.get(kind);
 }
 function showRoster(kinds,assets){
- visibleRoster=[...kinds];
- for(const v of views)for(const object of [v.root,v.disk,v.shadow])object.visible=false;
- views=kinds.map((kind,id)=>{
+ const nextViews=kinds.map((kind,id)=>{
   if(!viewCache[id].has(kind))viewCache[id].set(kind,createView(assets[id].scene,id,kind));
   return viewCache[id].get(kind);
  });
+ for(const v of views)for(const object of [v.root,v.disk,v.shadow])object.visible=false;
+ views=nextViews;visibleRoster=[...kinds];
 }
 let previewRequest=0, pickSlot=0, previewStarted=0;
 function selectedRoster(){return [$('player-fighter').value,$('rival-fighter').value];}
@@ -124,9 +128,9 @@ addEventListener('keydown',e=>{if(layoutBlocked)return;if(e.target instanceof HT
 for(let button of document.querySelectorAll('[data-input]')){let value=button.dataset.input;button.addEventListener('pointerdown',e=>{e.preventDefault();if(layoutBlocked)return;button.setPointerCapture(e.pointerId);touchHeld.add(value);touchPressed.add(value);if(value==='punch'||value==='kick')attackKeys[0].push(value);button.classList.add('active');});let end=e=>{e.preventDefault();touchHeld.delete(value);button.classList.remove('active');};button.addEventListener('pointerup',end);button.addEventListener('pointercancel',end);button.addEventListener('lostpointercapture',()=>{touchHeld.delete(value);button.classList.remove('active');});}
 function readInput(player){let out={attacks:attackKeys[player].splice(0),skip:pressed.has('Enter')};if(player===0){for(let [code,name] of Object.entries(mapping))out[name] ||= ['jump','punch','kick','sweep','grabSignature','special'].includes(name)?pressed.has(code):held.has(code);if(mode!=='local'){out.left ||= held.has('ArrowLeft');out.right ||= held.has('ArrowRight');out.jump ||= pressed.has('ArrowUp');out.crouch ||= held.has('ArrowDown');}for(let name of touchHeld)if(!['jump','punch','kick','sweep','grabSignature','special'].includes(name))out[name]=true;for(let name of touchPressed)out[name]=true;}else{Object.assign(out,{left:held.has('ArrowLeft'),right:held.has('ArrowRight'),jump:pressed.has('ArrowUp'),crouch:held.has('ArrowDown'),block:held.has('ShiftRight')});for(let [n,name] of [['1','punch'],['2','kick'],['3','sweep']])out[name]=pressed.has('Numpad'+n)||pressed.has('Digit'+n);out.grabSignature=pressed.has('Numpad4')||pressed.has('Digit4');out.special=pressed.has('Numpad0')||pressed.has('Digit0');}return out;}
 const audioMixer=createAudioMixer();
-const knockoutVoice=new Audio('./assets/knockout.mp3');
+const knockoutVoice=new Audio(resolveAsset('./assets/knockout.mp3'));
 knockoutVoice.preload='auto';knockoutVoice.id='knockout-voice';knockoutVoice.hidden=true;document.body.append(knockoutVoice);audioMixer.attach(knockoutVoice);
-const finishVoice=new Audio('./assets/samay-samapti.wav');
+const finishVoice=new Audio(resolveAsset('./assets/samay-samapti.wav'));
 finishVoice.preload='auto';finishVoice.id='finish-voice';finishVoice.hidden=true;document.body.append(finishVoice);audioMixer.attach(finishVoice);
 function stopFinish(){finishVoice.pause();knockoutVoice.pause();}
 function playFinishVoice(){
@@ -144,7 +148,15 @@ const dracoLoader=new DRACOLoader();
 dracoLoader.setDecoderPath('./vendor/three/addons/libs/draco/gltf/').setDecoderConfig({type:'wasm'}).setWorkerLimit(2);
 const loader=new GLTFLoader().setDRACOLoader(dracoLoader);
 let loaded={fighter:0,car:0,stands:0,audio:0};
-async function loadAsset(name,url){let response=await fetch(url);if(!response.ok)throw new Error(`${name}: HTTP ${response.status}`);let total=Number(response.headers.get('content-length'))||1,reader=response.body.getReader(),chunks=[],count=0;while(true){let {done,value}=await reader.read();if(done)break;chunks.push(value);count+=value.length;loaded[name]=Math.min(1,count/total);$('load-fill').style.width=((loaded.fighter*.35+loaded.car*.35+loaded.stands*.10+loaded.audio*.20)*100)+'%';$('load-status').textContent=`${name==='fighter'?'Fighter':name==='car'?'Safari':name==='stands'?'Crowd':'Fighter'} · ${(count/1048576).toFixed(1)} MB`; }let buffer=new Uint8Array(count),offset=0;for(let c of chunks){buffer.set(c,offset);offset+=c.length;}return new Promise((resolve,reject)=>loader.parse(buffer.buffer,'./assets/',resolve,reject));}
+async function loadAsset(name,url){
+ let failure;
+ for(let attempt=0;attempt<4;attempt++){
+  try{return await loadAssetOnce(name,url,attempt>0);}
+  catch(error){failure=error;if(attempt<3)await new Promise(resolve=>setTimeout(resolve,350*2**attempt));}
+ }
+ throw failure;
+}
+async function loadAssetOnce(name,url,retry=false){let response=await fetch(url,{signal:AbortSignal.timeout(20000),cache:retry?'reload':'default'});if(!response.ok)throw new Error(`${name}: HTTP ${response.status}`);let total=Number(response.headers.get('content-length'))||1,reader=response.body.getReader(),chunks=[],count=0;while(true){let {done,value}=await reader.read();if(done)break;chunks.push(value);count+=value.length;loaded[name]=Math.min(1,count/total);$('load-fill').style.width=((loaded.fighter*.35+loaded.car*.35+loaded.stands*.10+loaded.audio*.20)*100)+'%';$('load-status').textContent=`${name==='fighter'?'Fighter':name==='car'?'Safari':name==='stands'?'Crowd':'Fighter'} · ${(count/1048576).toFixed(1)} MB`; }let buffer=new Uint8Array(count),offset=0;for(let c of chunks){buffer.set(c,offset);offset+=c.length;}if(count<12||new DataView(buffer.buffer).getUint32(0,true)!==0x46546c67)throw new Error('Incomplete model download');return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Model decoding timed out')),30000);loader.parse(buffer.buffer,'./assets/',value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});}
 function createView(template,id,kind){let model=clone(template),root=new THREE.Group();root.add(model);scene.add(root);model.updateMatrixWorld(true);let bones={};model.traverse(o=>{if(o.isBone)bones[o.name.replace(/[._]?([LR])$/,'.$1')]={bone:o,base:o.quaternion.clone(),restScale:o.scale.clone(),world:o.getWorldQuaternion(new THREE.Quaternion())};if(o.isMesh){if(o.morphTargetDictionary)for(let [n,index] of Object.entries(o.morphTargetDictionary))if(n.startsWith('Fist_'))o.morphTargetInfluences[index]=1;o.castShadow=true;o.frustumCulled=false;o.material=o.material.clone();o.material.roughness=Math.max(.60,o.material.roughness??.7);o.material.side=THREE.FrontSide;}});let disk=new THREE.Mesh(new THREE.RingGeometry(.32,.37,48),new THREE.MeshBasicMaterial({color:id===0?0xedb95e:0xe06d62,transparent:true,opacity:.68,side:THREE.DoubleSide}));disk.rotation.x=-Math.PI/2;disk.position.y=.085;disk.visible=false;scene.add(disk);let shadow=new THREE.Mesh(new THREE.PlaneGeometry(1.15,.65),new THREE.MeshBasicMaterial({map:shadowTexture(),transparent:true,opacity:.42,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.075;scene.add(shadow);const mouthLocal=kind==='spit'?bones.head.bone.worldToLocal(model.localToWorld(new THREE.Vector3(0,1.744,.122))):kind==='burst'?bones.head.bone.worldToLocal(model.localToWorld(new THREE.Vector3(.042,1.741,.115))):null;const footHeight=Object.fromEntries(['L','R'].map(side=>[side,bones['foot.'+side].bone.getWorldPosition(new THREE.Vector3()).y]));return {root,model,bones,disk,shadow,id,mouthLocal,footHeight};}
 let shadowTex;function shadowTexture(){if(shadowTex)return shadowTex;let c=document.createElement('canvas');c.width=c.height=64;let x=c.getContext('2d'),g=x.createRadialGradient(32,32,2,32,32,32);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return shadowTex=new THREE.CanvasTexture(c);}
 function pose(view,name,x=0,y=0,z=0,blend=.45){let b=view.bones[name];if(!b)return;euler.set(x,y,z,'XYZ');axisQ.setFromEuler(euler);tmpQ.copy(b.world).invert().multiply(axisQ).multiply(b.world);let target=b.base.clone().multiply(tmpQ);b.bone.quaternion.slerp(target,blend);}
@@ -311,6 +323,7 @@ async function boot(){
   ]);
   loaded.audio=1;$('load-fill').style.width='100%';
   ready=true;$('loading').classList.add('hidden');mainMenu();updateOrientation();
+   for(const kind of Object.keys(roster))templateFor(kind).catch(()=>{});
  }catch(error){
   console.error(error);$('load-status').textContent='Could not load the scene: '+error.message;
   $('loading').querySelector('h2').textContent='LOADING FAILED';
@@ -331,7 +344,7 @@ function frame(ms){requestAnimationFrame(frame);let dt=Math.min((ms-last)/1000||
   }
   updateHUD();
  }
- if(ready){let fs=match?match.fighters:previewFighters;for(let i=0;i<2;i++){const visible=match?.presentation?match.presentation.id===i:!!match||(!previewPending&&visibleRoster?.[i]===selectedRoster()[i]);views[i].root.visible=visible;views[i].disk.visible=false;views[i].shadow.visible=visible;animateFighter(views[i],fs[i],dt);}if(match?.phase==='special')animateSpecial(dt);if(match?.presentation){const shot=match.presentation;const view=views[shot.id];presentations.animate(shot,view,match.phase==='victory',carRoot,driver,carWheels,carDoor);view.shadow.position.x=view.root.position.x;view.shadow.position.z=view.root.position.z;view.shadow.visible=view.root.visible;}if(!paused)audience?.update(globalTime,dt);}
+ if(ready){let fs=match?match.fighters:previewFighters;for(let i=0;i<2;i++){const visible=match?.presentation?match.presentation.id===i:!!match||(!!visibleRoster);views[i].root.visible=visible;views[i].disk.visible=false;views[i].shadow.visible=visible;animateFighter(views[i],fs[i],dt);}if(match?.phase==='special')animateSpecial(dt);if(match?.presentation){const shot=match.presentation;const view=views[shot.id];presentations.animate(shot,view,match.phase==='victory',carRoot,driver,carWheels,carDoor);view.shadow.position.x=view.root.position.x;view.shadow.position.z=view.root.position.z;view.shadow.visible=view.root.visible;}if(!paused)audience?.update(globalTime,dt);}
  for(let i=sparks.length-1;i>=0;i--){let s=sparks[i];s.life-=dt;s.v.y-=8*dt;s.mesh.position.addScaledVector(s.v,dt);s.mesh.scale.setScalar(Math.max(0,s.life*3));if(s.life<=0){scene.remove(s.mesh);s.mesh.material.dispose();sparks.splice(i,1);}}
  if(callTimer>0){callTimer-=dt;if(callTimer<=0)$('callout').style.opacity=0;}if(labelTimer>0){labelTimer-=dt;if(labelTimer<=0)$('hit-label').textContent='';}
  const cinematic=match?.phase==='special', closeSpecial=cinematic&&match.special.kind!=='safari';const propSpecial=closeSpecial&&['slap','burst','spit'].includes(match.special.kind);const focus=match?match.fighters.flatMap(f=>f.hp<=0?[f.x,f.x-f.facing*1.9]:[f.x]):[-1.42,1.42];const lo=Math.min(...focus),hi=Math.max(...focus),mid=match?.presentation?0:closeSpecial?match.special.center+(propSpecial?match.special.facing*.52:0):cinematic?0:(lo+hi)/2;let distance=match?.presentation?5.7:closeSpecial?4.8:cinematic?9:hi-lo;let camZ=match?.presentation?5.2:closeSpecial?5.4:cinematic?7:match?6.1:camera.aspect<.85?9:7.0;let fov=match?THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(2*Math.atan((distance+2.5)/((cinematic?14:11)*camera.aspect))),camera.aspect>1.65?32:40,78):camera.aspect<.85?56:38;if(match&&!cinematic&&!match.presentation&&camera.aspect<.85)camZ=Math.max(camZ,(distance+2.1)/(2*Math.tan(THREE.MathUtils.degToRad(fov/2))*camera.aspect));const lift=match?.presentation?.kind==='blast'?.44:match&&!cinematic?Math.max(...match.fighters.map(f=>f.y)):0;camera.fov=THREE.MathUtils.lerp(camera.fov,fov+lift*5,.10);camera.updateProjectionMatrix();camera.position.lerp(new THREE.Vector3(mid,cinematic?3.1:match?2.25:1.85,camZ),.07);camera.lookAt(mid,match?1.0+lift*.53:1.03,0);if(shake>0){camera.position.x+=(Math.random()-.5)*shake;camera.position.y+=(Math.random()-.5)*shake;shake*=.84;if(shake<.002)shake=0;}updateTauntBubble();fightDialogue.update(match,views,driver,paused);

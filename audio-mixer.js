@@ -1,3 +1,4 @@
+import {resolveAsset} from './media-config.js?v=editor17';
 export function createAudioMixer(){
  const context=new AudioContext();
  const master=context.createGain();
@@ -10,7 +11,7 @@ export function createAudioMixer(){
  master.gain.value=.78;
  master.connect(limiter).connect(context.destination);
  const clips=new Map(),elements=new WeakMap(),buffers=new Map(),levels=new Map(),starts=new Map(),activeSources=new Set();
- const absolute=url=>new URL(url,location.href).href;
+ const absolute=url=>new URL(resolveAsset(url),location.href).href;
  async function measure(url){
   url=absolute(url);
   if(!clips.has(url))clips.set(url,(async()=>{

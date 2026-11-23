@@ -1,5 +1,6 @@
+import {resolveAsset} from './media-config.js?v=editor17';
 import * as THREE from 'three';
-import {createEntranceProps} from './entrance-props.js?v=pages16';
+import {createEntranceProps} from './entrance-props.js?v=editor17';
 
 const {lerp,smoothstep}=THREE.MathUtils;
 const v=(x,y,z)=>new THREE.Vector3(x,y,z);
@@ -27,7 +28,7 @@ export function createFighterPresentations(scene,{pose,solveArm,setFists,resetPo
  const smoke=Array.from({length:4},()=>part(scene,sphere,new THREE.MeshBasicMaterial({
   color:0xb1b7bf,transparent:true,depthWrite:false
  }),0,0,0));
- const map=new THREE.TextureLoader().load('./assets/vimal-packet.webp');
+ const map=new THREE.TextureLoader().load(resolveAsset('./assets/vimal-packet.webp'));
  map.colorSpace=THREE.SRGBColorSpace;
  const face=new THREE.MeshBasicMaterial({map});
  const packet=part(scene,new THREE.BoxGeometry(.096,.123,.014),[hot,hot,hot,hot,face,face],0,0,0);
