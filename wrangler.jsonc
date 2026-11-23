@@ -38,5 +38,15 @@
         "SiteContent"
       ]
     }
+  ],
+  "routes": [
+    {
+      "pattern": "aajabhidle.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.aajabhidle.com",
+      "custom_domain": true
+    }
   ]
 }

@@ -174,3 +174,99 @@ body.mobile-device{background:#020407}
 #loading .load-track i{border-radius:7px}
 @media(max-aspect-ratio:16/9){.loading-art{object-fit:cover}}
 @media(max-height:500px){body.mobile-device .matchup-controls{width:76%;gap:5px}body.mobile-device .fighter-card{height:54px}body.mobile-device .arena-card{height:36px}body.mobile-device .matchup-modes button{padding:8px 6px}body.mobile-device .primary{padding:9px 18px;font-size:16px}body.mobile-device .matchup-title h1{font-size:23px}body.mobile-device .matchup-stage{top:23%;height:25%}body.mobile-device .matchup-pickers{bottom:201px;right:20px}body.mobile-device #fight-commentary{width:75%;bottom:6px}body.mobile-device #touch{bottom:72px}body.mobile-device #touch button{width:40px;height:40px}body.mobile-device .dpad{grid-template-columns:repeat(3,37px);grid-template-rows:repeat(2,37px)}body.mobile-device .actions{grid-template-columns:repeat(3,40px)}body.mobile-device .commentator img{width:25px;height:30px}body.mobile-device .commentator span{font-size:10px}body.mobile-device #hud{top:43px}body.mobile-device .corner-brand{width:110px;top:10px}body.mobile-device .quick-controls{top:8px}body.mobile-device .quick-controls button{font-size:8px}body.mobile-device .loading-live{padding:6px 0}body.mobile-device #loading .load-track{height:5px}}
+/* Mobile landscape: use the visual viewport, including notched and ultrawide phones. */
+#touch-config{display:none}
+html.touch-device #touch-config{display:block}
+html.portrait-gate #game-shell{visibility:hidden!important}
+html.portrait-gate #rotate-device[hidden]{display:flex!important}
+html.touch-device #game-shell{inset:0;left:0;top:0;width:var(--view-width,100vw);height:var(--view-height,100dvh);transform:translateZ(0);contain:layout paint;--edge-left:max(12px,env(safe-area-inset-left));--edge-right:max(12px,env(safe-area-inset-right));--edge-bottom:max(8px,env(safe-area-inset-bottom))}
+html.touch-device .corner-brand,html.touch-device body.in-game .corner-brand{left:var(--edge-left);top:max(7px,env(safe-area-inset-top));width:clamp(90px,14vw,145px)}
+html.touch-device .quick-controls,html.touch-device body.in-game .quick-controls{right:var(--edge-right);top:max(6px,env(safe-area-inset-top));gap:5px}
+html.touch-device .quick-controls button{font-size:9px;letter-spacing:.04em;padding:7px 9px;background:#101c2ddd;border:1px solid #62758a80;border-radius:8px;min-height:29px}
+html.touch-device #hud{left:var(--edge-left);right:var(--edge-right);top:43px;grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr);gap:12px}
+html.touch-device .fighter-hud{min-width:0}
+html.touch-device .fighter-label{min-height:27px;gap:5px}
+html.touch-device .fighter-label>span{min-width:0}
+html.touch-device .fighter-label #player-name,html.touch-device .fighter-label #opponent-name{font-size:clamp(11px,1.7vw,19px);overflow-wrap:anywhere}
+html.touch-device .fighter-label small{font-size:7px;margin-bottom:3px}
+html.touch-device .health{height:12px;padding:2px;margin-top:4px}
+html.touch-device .rounds{height:11px;font-size:12px;letter-spacing:3px;margin:4px 0}
+html.touch-device .special-meter{max-width:65%;height:17px}
+html.touch-device .special-meter>div>span{display:none}
+html.touch-device .special-meter button{font-size:8px;padding:0;white-space:nowrap}
+html.touch-device .special-meter>i{height:3px;margin-top:2px}
+html.touch-device .clock{margin-top:0}.touch-device .clock strong{font-size:38px;margin:3px 0}
+html.touch-device .clock small,html.touch-device .clock>span{font-size:6px}
+html.touch-device #hp1,html.touch-device #hp2{display:none}
+html.touch-device #touch{left:var(--edge-left);right:var(--edge-right);bottom:calc(var(--edge-bottom) + 50px);align-items:end;opacity:var(--touch-opacity,.85);--button-size:calc(clamp(38px,10.5vh,60px)*var(--touch-scale,1))}
+html.touch-device #touch button{width:var(--button-size);height:var(--button-size);border-radius:50%;border:1px solid #a8c5e188;background:linear-gradient(145deg,#23394ded,#0e1929ed);box-shadow:0 3px 0 #020912a0,inset 0 1px 1px #ffffff33;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;backdrop-filter:blur(7px);-webkit-tap-highlight-color:transparent}
+html.touch-device #touch button span{font:900 calc(var(--button-size)*.36)/1 var(--body)}
+html.touch-device #touch button small{font:700 7px/1 var(--body);letter-spacing:.05em}
+html.touch-device .dpad,html.touch-device .actions{grid-template-columns:repeat(3,var(--button-size));grid-template-rows:repeat(2,var(--button-size));gap:7px}
+html.touch-device .dpad button{border-radius:15px!important}
+html.touch-device .dpad button span{font-size:calc(var(--button-size)*.8)!important}
+html.touch-device #touch [data-input=punch]{background:linear-gradient(145deg,#2277a8ef,#143149ef);border-color:#6dcdf2}
+html.touch-device #touch [data-input=kick]{background:linear-gradient(145deg,#ad432eef,#532717ef);border-color:#ff9c73}
+html.touch-device #touch [data-input=special]{border-color:#e6f75d;color:#e6f75d;background:linear-gradient(145deg,#5a6425ef,#222a16ef)}
+html.touch-device #touch button.active{transform:translateY(2px) scale(.95);background:#628aab;box-shadow:inset 0 2px 5px #0008}
+html.touch-device #touch-special.ready{box-shadow:0 0 16px #cbea4566,inset 0 1px 2px #ffff8c;border-color:#f2ff82}
+html.touch-device body.left-handed #touch{flex-direction:row-reverse}
+html.touch-device #fight-commentary{left:50%;width:min(64%,760px);bottom:var(--edge-bottom);padding:5px 9px;gap:6px;grid-template-columns:minmax(0,1fr) 13px minmax(0,1fr)}
+html.touch-device .commentator img{width:24px;height:29px;flex-shrink:0}
+html.touch-device .commentator b{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;letter-spacing:.03em}
+html.touch-device .commentator span{font-size:10px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+html.touch-device .commentary-live{top:-11px;font-size:7px;padding:1px 6px}
+html.touch-device footer{display:none}
+html.touch-device #controls{display:none}
+html.touch-device .room-drawer{left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:min(480px,calc(100% - 30px));max-width:none;max-height:calc(var(--view-height,100dvh) - 24px);overflow-y:auto;overscroll-behavior:contain;padding:16px;border-radius:18px}
+html.touch-device .room-title h2{font-size:20px}
+html.touch-device .room-title button{font-size:10px;border:1px solid #52687e;padding:8px;border-radius:7px}
+html.touch-device .room-drawer p{font-size:12px;margin:9px 0}
+html.touch-device .room-drawer .primary{margin:9px 0;padding:11px;font-size:15px}
+html.touch-device .room-join input{padding:10px;font-size:16px}
+html.touch-device .keyboard-mode{margin-top:10px}
+html.touch-device .modal-card{width:min(540px,calc(100% - 28px));max-height:calc(var(--view-height,100dvh) - 24px);overflow:auto;padding:18px}
+html.touch-device .modal-card h2{font-size:26px;margin:9px 0 16px}
+html.touch-device .help-card p{font-size:12px;line-height:1.3}
+html.touch-device .matchup{padding:12px var(--edge-right) var(--edge-bottom) var(--edge-left)}
+html.touch-device .matchup-title h1{font-size:clamp(20px,4vh,34px)}
+html.touch-device #pick-status{font-size:9px;letter-spacing:.08em;margin:4px}
+html.touch-device .matchup-controls{width:min(100%,960px);gap:6px}
+html.touch-device .matchup-stage{left:var(--edge-left);right:var(--edge-right);top:23%;height:21%}
+html.touch-device .fighter-story{width:25%;padding:7px 0;min-width:0}
+html.touch-device .fighter-story h2{font-size:clamp(16px,3.5vh,27px);margin:6px 0;overflow-wrap:anywhere}
+html.touch-device .fighter-story small{font-size:8px}
+html.touch-device .fighter-story strong{font-size:9px;overflow-wrap:anywhere}
+html.touch-device .fighter-story p{display:none}
+html.touch-device .matchup-versus{font-size:clamp(32px,9vh,65px);top:25%}
+html.touch-device .matchup-roster{gap:7px;grid-template-columns:repeat(6,minmax(0,1fr))}
+html.touch-device .fighter-card{height:clamp(46px,15vh,86px);min-width:0}
+html.touch-device .fighter-card b{font-size:clamp(8px,1.25vw,12px);left:5px;right:4px;bottom:5px;overflow-wrap:anywhere}
+html.touch-device .fighter-card[data-slot]:not([data-slot=""]):before{font-size:7px}
+html.touch-device .arena-card{height:clamp(30px,9vh,50px);padding:5px 8px}
+html.touch-device .arena-card span{font-size:clamp(9px,1.25vw,13px)}
+html.touch-device .arena-card small{font-size:7px;margin:0}
+html.touch-device .arena-card.selected:after{display:none}
+html.touch-device .matchup-pickers{position:static;align-self:flex-end;order:-1}
+html.touch-device .difficulty-buttons{border-radius:9px;padding:3px}
+html.touch-device .difficulty-buttons button{padding:4px 10px;border-radius:6px;font-size:9px}
+html.touch-device .matchup-actions{margin-top:1px;gap:10px}
+html.touch-device .matchup-modes button{font-size:11px;padding:9px 6px;border-radius:8px}
+html.touch-device .primary{min-width:125px;padding:10px 18px;font-size:17px}
+html.touch-device .special-speech,html.touch-device #taunt-bubble{font-size:11px;padding:7px;max-width:28%;overflow-wrap:anywhere}
+html.touch-device #hit-label{font-size:12px;max-width:23%;overflow-wrap:anywhere}
+html.touch-device #fighter-presentation{bottom:18%;left:var(--edge-left);right:var(--edge-right)}
+html.touch-device #fighter-presentation strong{font-size:clamp(22px,5vh,40px)}
+html.touch-device #fighter-presentation span{font-size:12px}
+.touch-settings-card label{display:grid;grid-template-columns:1fr auto;gap:8px;margin:14px 0;font-size:14px}
+.touch-settings-card input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--yellow)}
+.touch-settings-card .switch-row{display:flex;align-items:center;gap:10px}
+.touch-settings-card input[type=checkbox]{accent-color:var(--yellow);width:18px;height:18px}
+.touch-settings-card output{color:var(--yellow)}
+.touch-settings-card p{font-size:12px;color:#b9cad7}
+.touch-setting-actions{display:flex;gap:10px;margin-bottom:15px}
+.touch-setting-actions .secondary{margin:0}
+@media(orientation:portrait) and (pointer:coarse){#game-shell{visibility:hidden!important}#rotate-device[hidden]{display:flex!important}}
+@media(max-height:330px){html.touch-device .fighter-story strong,html.touch-device .fighter-story small{display:none}html.touch-device .fighter-card{height:42px}html.touch-device .arena-card{height:28px}html.touch-device .matchup-controls{gap:4px}html.touch-device #hud{top:37px}html.touch-device .quick-controls button{padding:5px 7px;min-height:25px}html.touch-device #touch{bottom:50px;--button-size:calc(34px*var(--touch-scale,1))}html.touch-device #fight-commentary{bottom:5px}html.touch-device .clock strong{font-size:31px}}
+html.touch-device #touch svg{width:44%;height:44%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+html.touch-device .dpad svg{width:57%!important;height:57%!important}

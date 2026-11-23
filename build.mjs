@@ -6,7 +6,7 @@ const output=path.join(root,'dist');
 // Clear only our generated output, never the source assets.
 if(path.dirname(output)!==root||path.basename(output)!=='dist')throw Error('Invalid output directory');
 await fs.rm(output,{recursive:true,force:true});await fs.mkdir(output,{recursive:true});
-const files=['index.html','admin.html','admin.js','admin.css','media-slots.js','media-config.js','style.css','main.js','combat.js','fight-motion.js','character-specials.js','fighter-presentations.js','entrance-props.js','bleachers.js','arenas.js','audio-mixer.js','fight-dialogue.js','room-client.js','site.webmanifest','_headers','_routes.json'];
+const files=['index.html','mobile-shell.js','touch-controls.js','admin.html','admin.js','admin.css','media-slots.js','media-config.js','style.css','main.js','combat.js','fight-motion.js','character-specials.js','fighter-presentations.js','entrance-props.js','bleachers.js','arenas.js','audio-mixer.js','fight-dialogue.js','room-client.js','site.webmanifest','_headers','_routes.json'];
 for(const file of files)await fs.copyFile(path.join(root,file),path.join(output,file));
 for(const dir of ['assets','vendor'])await fs.cp(path.join(root,dir),path.join(output,dir),{recursive:true,filter:source=>{
  const relative=path.relative(root,source).replaceAll('\\','/');

@@ -1,17 +1,18 @@
-import {initMediaConfig,resolveAsset} from './media-config.js?v=editor17';
+import {setupTouchControls} from './touch-controls.js?v=mobile18';
+import {initMediaConfig,resolveAsset} from './media-config.js?v=mobile18';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
-import {createArenaManager,ARENAS} from './arenas.js?v=editor17';
-import {createRoomClient} from './room-client.js?v=editor17';
-import {createAudioMixer} from './audio-mixer.js?v=editor17';
-import {createFightDialogue} from './fight-dialogue.js?v=editor17';
-import {createFighterPresentations} from './fighter-presentations.js?v=editor17';
+import {createArenaManager,ARENAS} from './arenas.js?v=mobile18';
+import {createRoomClient} from './room-client.js?v=mobile18';
+import {createAudioMixer} from './audio-mixer.js?v=mobile18';
+import {createFightDialogue} from './fight-dialogue.js?v=mobile18';
+import {createFighterPresentations} from './fighter-presentations.js?v=mobile18';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {strikePhases,signatureMoves,signatureAmount,warmupPose} from './fight-motion.js?v=editor17';
-import {createBleachers} from './bleachers.js?v=editor17';
+import {strikePhases,signatureMoves,signatureAmount,warmupPose} from './fight-motion.js?v=mobile18';
+import {createBleachers} from './bleachers.js?v=mobile18';
 import {clone} from 'three/addons/utils/SkeletonUtils.js';
-import {createCharacterSpecials} from './character-specials.js?v=editor17';
-import {STEP,WARMUP_SECONDS,createMatch,advance,cpuInput,SPECIALS,specialLanding,specialReady} from './combat.js?v=editor17';
+import {createCharacterSpecials} from './character-specials.js?v=mobile18';
+import {STEP,WARMUP_SECONDS,createMatch,advance,cpuInput,SPECIALS,specialLanding,specialReady} from './combat.js?v=mobile18';
 
 await initMediaConfig();
 const $=id=>document.getElementById(id),canvas=$('arena');
@@ -19,7 +20,7 @@ const gameShell=$('game-shell');
 const viewport=()=>({width:gameShell.clientWidth||innerWidth,height:gameShell.clientHeight||innerHeight});
 let layoutBlocked=false,orientationWasPaused=false;
 
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio,2),2.5));renderer.setSize(viewport().width,viewport().height);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.13;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(matchMedia('(pointer:coarse)').matches?Math.min(devicePixelRatio,1.75):Math.min(Math.max(devicePixelRatio,2),2.5));renderer.setSize(viewport().width,viewport().height);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.13;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();scene.background=new THREE.Color('#17222a');scene.fog=new THREE.FogExp2('#17222a',.003);const camera=new THREE.PerspectiveCamera(42,viewport().width/viewport().height,.1,180);
 scene.add(new THREE.HemisphereLight(0xc3d6e3,0x484039,2.2));const key=new THREE.DirectionalLight(0xffd9a4,3.8);key.position.set(-3,8,4);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-7;key.shadow.camera.right=7;key.shadow.camera.top=6;key.shadow.camera.bottom=-6;key.shadow.normalBias=.025;scene.add(key);const rim=new THREE.DirectionalLight(0x8ab5ff,2.8);rim.position.set(0,5,-5);scene.add(rim);
 let selectedDifficulty='normal',selectedArena='filmcity',arenaManager=null,roomInfo=null,networkSeat=0,networkClock=0,onlineLoading=null,lastRemoteTick=-1;
@@ -42,7 +43,7 @@ const stories={
  burst:['A hard-edged enforcer in a crisp white kurta.','Pachaas Tola','Four shots. Keep your guard ready.'],
  spit:['A stern inspector with an unorthodox last resort.','Saffron Spit','Packet, pinch, then a saffron spray.'],
 };
-const assetVersion='?v=editor17';
+const assetVersion='?v=mobile18';
 const templates=new Map(), viewCache=[new Map(),new Map()];
 let modelQueue=Promise.resolve();
 let visibleRoster=null, previewPending=false;
@@ -330,7 +331,7 @@ async function boot(){
  }
 }
 const previewFighters=[{x:-1.42,y:0,facing:1,hp:100,state:'idle',walk:0,stun:0,flash:0},{x:1.42,y:0,facing:-1,hp:100,state:'idle',walk:0,stun:0,flash:0}];
-function frame(ms){requestAnimationFrame(frame);let dt=Math.min((ms-last)/1000||0,.08);last=ms;if(!paused)globalTime+=dt;if(match&&!paused&&!layoutBlocked&&mode!=='online'){acc+=dt;let steps=0;while(acc>=STEP&&steps++<5){let inputs=[readInput(0),mode==='cpu'&&match.phase==='fight'?cpuInput(match):mode==='local'?readInput(1):{}];handleEvents(advance(match,inputs));pressed.clear();touchPressed.clear();acc-=STEP;}updateHUD();}else if(mode!=='online'||!match||paused){acc=0;attackKeys.forEach(queue=>queue.length=0);pressed.clear();touchPressed.clear();}
+function frame(ms){requestAnimationFrame(frame);let dt=Math.min((ms-last)/1000||0,.08);last=ms;if(layoutBlocked)return;if(!paused)globalTime+=dt;if(match&&!paused&&!layoutBlocked&&mode!=='online'){acc+=dt;let steps=0;while(acc>=STEP&&steps++<5){let inputs=[readInput(0),mode==='cpu'&&match.phase==='fight'?cpuInput(match):mode==='local'?readInput(1):{}];handleEvents(advance(match,inputs));pressed.clear();touchPressed.clear();acc-=STEP;}updateHUD();}else if(mode!=='online'||!match||paused){acc=0;attackKeys.forEach(queue=>queue.length=0);pressed.clear();touchPressed.clear();}
 
  if(mode==='online'&&match&&!paused&&!layoutBlocked){
   networkClock+=dt;
@@ -688,13 +689,15 @@ async function readyOnline(){
   await roomClient.ready();
  }catch(error){notice(error.message);}finally{$('start').disabled=false;}
 }
+let touchWasPaused=false;
+setupTouchControls({beforeOpen(){touchWasPaused=paused;if(match&&!paused)setPause(true);$('pause-panel').classList.add('hidden');clearInput();},afterClose(){if(match&&!touchWasPaused)setPause(false);}});
 document.addEventListener('pointerdown',()=>audioMixer.resume());
 
 function updateOrientation(){
  const mobile=matchMedia('(pointer:coarse)').matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
  const blocked=mobile&&innerHeight>innerWidth;
  $('rotate-device').hidden=!blocked;
- document.body.classList.toggle('mobile-device',mobile);
+ document.body.classList.toggle('mobile-device',mobile);document.documentElement.classList.toggle('portrait-gate',blocked);
  if(blocked&&!layoutBlocked){
   orientationWasPaused=paused;layoutBlocked=true;clearInput();
   if(match&&match.phase!=='over'&&!paused)setPause(true);
@@ -705,5 +708,5 @@ function updateOrientation(){
  requestAnimationFrame(resize);
 }
 addEventListener('resize',updateOrientation);
-addEventListener('orientationchange',updateOrientation);
+addEventListener('orientationchange',updateOrientation);visualViewport?.addEventListener('resize',updateOrientation);
 updateOrientation();

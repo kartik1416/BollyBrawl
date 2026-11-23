@@ -97,3 +97,11 @@ Editor backend integration check (against local Wrangler):
 ```sh
 CONTENT_TEST_URL=http://127.0.0.1:8802 ADMIN_TEST_PASSWORD=<configured-password> node cloudflare/content.test.mjs
 ```
+
+## Mobile controls and domain routing
+
+Mobile play is landscape-only. The startup gate is applied before the loading artwork paints. Landscape fills the visual viewport (including ultrawide phones), with safe-area spacing for notches. The room drawer and settings dialogs scroll within the usable screen rather than extending off it.
+
+Tap **TOUCH** to change button size/opacity, swap movement and attack sides, or request full screen. Preferences are saved on that device. iPhone browser full-screen limitations are handled with an Add to Home Screen hint.
+
+The root Worker config preserves custom-domain routing for both `aajabhidle.com` and `www.aajabhidle.com`. Both hosts serve the same game. DNS migrations can leave older resolver answers cached until their TTL expires; this cannot be fixed by changing the game code.
