@@ -1,4 +1,4 @@
-import {resolveAsset} from './media-config.js?v=editor17';
+import {resolveAsset} from './media-config.js?v=mobile18';
 import * as THREE from 'three';
 import {createEntranceProps} from './entrance-props.js?v=editor17';
 

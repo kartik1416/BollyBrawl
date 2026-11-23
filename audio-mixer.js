@@ -1,4 +1,4 @@
-import {resolveAsset} from './media-config.js?v=editor17';
+import {resolveAsset} from './media-config.js?v=mobile18';
 export function createAudioMixer(){
  const context=new AudioContext();
  const master=context.createGain();
